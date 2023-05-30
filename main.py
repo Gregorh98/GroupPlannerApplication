@@ -37,7 +37,7 @@ def index():
 @app.route("/home")
 def home():
     if "id" in session.keys():
-        return render_template("home.html")
+        return render_template("home.html", groupMembers=db.getGroupMemberNames(session["groupCode"], session["name"]))
     else:
         return redirect(url_for("index"))
 

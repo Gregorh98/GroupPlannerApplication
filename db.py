@@ -1,13 +1,18 @@
-import psycopg2
+import os
 
+import psycopg2
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def getConn():
+    print(os.getenv("DB_PASS"))
     return psycopg2.connect(
-        host="localhost",
-        port="5432",
-        database="GroupMeetOrganiser",
-        user="postgres",
-        password="alm151ntL"
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT"),
+        database=os.getenv("DB_DATABASE"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASS")
     )
 
 
@@ -18,8 +23,8 @@ def getUserId(name, groupCode):
             data = (name, groupCode,)
 
             cursor.execute(sql, data)
-            id = cursor.fetchone()[0]
-            return id
+            id = cursor.fetchone()
+            return id if id == None else id[0]
 
 
 def addUser(name, groupCode):
@@ -30,3 +35,14 @@ def addUser(name, groupCode):
 
             cursor.execute(sql, data)
             conn.commit()
+
+
+def getGroupMemberNames(groupCode, name):
+    with getConn() as conn:
+        with conn.cursor() as cursor:
+            sql = "select name from users.users where group_code = %s and name != %s"
+            data = (groupCode,name,)
+
+            cursor.execute(sql, data)
+            names = cursor.fetchall()
+            return names
