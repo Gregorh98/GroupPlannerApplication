@@ -1,0 +1,6 @@
+.selected {
+  background-color: #ccc;
+}
+.current-day {
+  background-color: blue;
+}

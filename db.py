@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def getConn():
-    print(os.getenv("DB_PASS"))
     return psycopg2.connect(
         host=os.getenv("DB_HOST"),
         port=os.getenv("DB_PORT"),
