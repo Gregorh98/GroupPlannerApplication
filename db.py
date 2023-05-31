@@ -49,6 +49,18 @@ def getGroupMemberNames(groupCode, name):
             return names
 
 
+def getUsersFreeOnDay(date, groupCode):
+    with getConn() as conn:
+        with conn.cursor() as cursor:
+            sql = "SELECT name FROM users.users WHERE id IN (SELECT user_id FROM entries.entries WHERE date = %s) and group_code = %s;"
+            data = (date, groupCode,)
+
+            cursor.execute(sql, data)
+            names = cursor.fetchall()
+            names = [name[0] for name in names]
+            return names
+
+
 def getTopDays(groupCode):
     with getConn() as conn:
         with conn.cursor() as cursor:

@@ -50,19 +50,27 @@
 
         <div class="col-sm">
             <div class="container mt-4">
-                <h3>Group Availability</h3>
+                <h3>Group Availability (Best 5 Days)</h3>
                 <table class="table">
                     <thead>
                     <tr>
                         <th>Date</th>
                         <th>Number Free</th>
+                        <th>People Free</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for date in topDays %}
+                    {% for item in usersFree %}
                         <tr>
-                            <td>{{ date[0] }}</td>
-                            <td>{{ date[1] }}/{{ userCount }}</td>
+                            <td>{{ item }}</td>
+                            <td>{{ usersFree[item]["numberFree"] }}/{{ userCount }}</td>
+                            <td>
+                                <ul>
+                                    {% for person in usersFree[item]["peopleFree"] %}
+                                        <li>{{ person.title() }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>

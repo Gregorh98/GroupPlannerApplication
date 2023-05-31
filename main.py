@@ -48,8 +48,17 @@ def home():
             request.method = "GET"
             return redirect(url_for("home"))
 
+        topDays = db.getTopDays(session["groupCode"])
+        usersFreeOnDay = {}
+        for entry in topDays:
+            date = str(entry[0])
+            usersFreeOnDay[date] = {}
+            usersFree = db.getUsersFreeOnDay(date, session["groupCode"])
+            usersFreeOnDay[date]["numberFree"] = entry[1]
+            usersFreeOnDay[date]["peopleFree"] = usersFree
+
         return render_template("home.html", groupMembers=db.getGroupMemberNames(session["groupCode"], session["name"]),
-                               topDays=db.getTopDays(session["groupCode"]),
+                               usersFree=usersFreeOnDay,
                                userCount=db.getGroupUserCount(session["groupCode"]),
                                selected_dates=db.getDatesForUser(session["id"]))
     else:
