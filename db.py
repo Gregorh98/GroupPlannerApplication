@@ -4,6 +4,8 @@ from datetime import datetime
 import psycopg2
 from dotenv import load_dotenv
 
+import dateutil.parser as dp
+
 load_dotenv()
 
 
@@ -77,7 +79,7 @@ def addDates(dates, userid):
         with conn.cursor() as cursor:
             print(dates)
             for d in dates:
-                dateInQuestion = datetime.fromisoformat(d).date()
+                dateInQuestion = dp.isoparse(d).date()
                 sql = "INSERT INTO entries.entries (user_id, date, available) SELECT %s, %s, %s WHERE NOT EXISTS (SELECT 1 FROM entries.entries WHERE user_id = %s AND date = %s);"
                 data = (userid, dateInQuestion, True, userid, dateInQuestion)
 
