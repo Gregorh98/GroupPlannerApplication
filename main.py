@@ -1,4 +1,6 @@
+import datetime
 import secrets
+from ast import literal_eval
 
 from flask import Flask, render_template, request, redirect, session, url_for
 
@@ -34,10 +36,15 @@ def index():
         return render_template("index.html")
 
 
-@app.route("/home")
+@app.route("/home", methods=("GET", "POST"))
 def home():
     if "id" in session.keys():
-        return render_template("home.html", groupMembers=db.getGroupMemberNames(session["groupCode"], session["name"]))
+        if request.method == "POST":
+            db.addDates(literal_eval(request.form["selectedDates"]), session["id"])
+            request.method = "GET"
+            return redirect(url_for("home"))
+
+        return render_template("home.html", groupMembers=db.getGroupMemberNames(session["groupCode"], session["name"]), topDays=db.getTopDays(session["groupCode"]))
     else:
         return redirect(url_for("index"))
 

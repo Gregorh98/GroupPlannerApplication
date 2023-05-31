@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 import psycopg2
 from dotenv import load_dotenv
@@ -45,3 +46,27 @@ def getGroupMemberNames(groupCode, name):
             cursor.execute(sql, data)
             names = cursor.fetchall()
             return names
+
+
+def getTopDays(groupCode):
+    with getConn() as conn:
+        with conn.cursor() as cursor:
+            sql = "SELECT date, COUNT(date) as popularity FROM entries.entries INNER JOIN users.users ON entries.entries.user_id = users.users.id WHERE group_code = %s GROUP BY group_code, date ORDER BY popularity DESC LIMIT 10;"
+            data = (groupCode,)
+
+            cursor.execute(sql, data)
+            dates = cursor.fetchall()
+            return dates
+
+
+def addDates(dates, userid):
+    with getConn() as conn:
+        with conn.cursor() as cursor:
+            for d in dates:
+                dateInQuestion = datetime.fromisoformat(d).date()
+                sql = "insert into entries.entries (user_id, date, available) values (%s, %s, %s)"
+                data = (userid, dateInQuestion, True)
+
+                cursor.execute(sql, data)
+
+            conn.commit()
