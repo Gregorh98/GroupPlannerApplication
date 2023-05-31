@@ -40,8 +40,12 @@ def index():
 def home():
     if "id" in session.keys():
         if request.method == "POST":
-            dates = literal_eval(request.form["selectedDates"])
-            db.addDates(dates, session["id"])
+            selectedDates = literal_eval(request.form["selectedDates"])
+            db.addDates(selectedDates, session["id"])
+
+            removedDates = literal_eval(request.form["removedDates"])
+            db.removeDates(removedDates, session["id"])
+
             request.method = "GET"
             return redirect(url_for("home"))
 

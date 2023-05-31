@@ -63,7 +63,6 @@ def addDates(dates, userid):
         with conn.cursor() as cursor:
             print(dates)
             for d in dates:
-                print(d)
                 dateInQuestion = datetime.fromisoformat(d).date()
                 sql = "INSERT INTO entries.entries (user_id, date, available) SELECT %s, %s, %s WHERE NOT EXISTS (SELECT 1 FROM entries.entries WHERE user_id = %s AND date = %s);"
                 data = (userid, dateInQuestion, True, userid, dateInQuestion)
@@ -81,7 +80,6 @@ def getDatesForUser(userId):
 
             cursor.execute(sql, data)
             dates = [str(r[0]) for r in cursor.fetchall()]
-            print("retrieved:", dates)
             return dates
 
 def getGroupUserCount(groupCode):
@@ -93,3 +91,16 @@ def getGroupUserCount(groupCode):
             cursor.execute(sql, data)
             count = cursor.fetchone()
             return count[0] if count is not None else 0
+
+
+def removeDates(dates, userid):
+    with getConn() as conn:
+        with conn.cursor() as cursor:
+            for d in dates:
+                dateInQuestion = datetime.fromisoformat(d).date()
+                sql = "DELETE FROM entries.entries WHERE user_id = %s AND date = %s;"
+                data = (userid, dateInQuestion)
+
+                cursor.execute(sql, data)
+
+            conn.commit()
