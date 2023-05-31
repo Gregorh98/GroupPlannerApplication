@@ -117,3 +117,17 @@ def changeScreenName(userId, newName):
 
             cursor.execute(sql, data)
             conn.commit()
+
+
+def removeUser(userId, groupCode):
+    with getConn() as conn:
+        with conn.cursor() as cursor:
+            sql = "DELETE FROM entries.entries WHERE user_id = %s"
+            data = (userId,)
+            cursor.execute(sql, data)
+
+            sql = "DELETE FROM users.users WHERE id = %s"
+            data = (userId,)
+            cursor.execute(sql, data)
+
+        conn.commit()

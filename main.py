@@ -1,7 +1,7 @@
 import secrets
 from ast import literal_eval
 
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session, url_for, flash
 
 import db
 
@@ -58,13 +58,30 @@ def home():
 
 @app.route("/changeScreenName", methods=("GET", "POST"))
 def changeScreenName():
-    if request.method == "POST":
-        newName = request.form["name"]
-        db.changeScreenName(session["id"], newName)
-        session["name"] = newName
-        return redirect(url_for("home"))
+    if "id" in session.keys():
+        if request.method == "POST":
+            newName = request.form["name"]
 
-    return render_template("changeScreenName.html")
+            if db.getUserId(newName, session["groupCode"]) == None:
+                db.changeScreenName(session["id"], newName)
+                session["name"] = newName
+                flash("Successfully changed name!")
+                request.method = "GET"
+                return redirect(url_for("home"))
+            else:
+                flash("Name is already in use for this group. Please try another name.")
+                request.method = "GET"
+                return redirect(url_for("changeScreenName"))
+
+        return render_template("changeScreenName.html")
+    else:
+        return redirect(url_for("index"))
+
+
+@app.route("/leaveGroup")
+def leaveGroup():
+    db.removeUser(session["id"], session["groupCode"])
+    return redirect(url_for("logout"))
 
 
 @app.route("/logout")

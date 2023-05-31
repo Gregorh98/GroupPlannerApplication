@@ -11,7 +11,9 @@
 </head>
 <body>
 {% include "_includes/_navbar.html" %}
-<div class="container" style="text-align: center">
+{% include "_includes/_toast.html" %}
+
+<div class="container mt-4" style="text-align: center">
     <h1>Change Screen Name</h1>
     <form method="POST">
         <div class="form-group mt-4">
@@ -25,5 +27,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+
+<script>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            var message = "{{ messages[0] }}";  // Assuming you only flash one message at a time
+            var toast = new bootstrap.Toast(document.querySelector('.toast'));
+            toastBody.innerHTML = message;
+            if ("{{status}}" == "success") {
+                mainToast.classList.add("text-bg-success");
+            } else {
+                mainToast.classList.add("text-bg-danger");
+            }
+            toast.show();
+            var toastElement = document.querySelector('.toast');
+            toastElement.addEventListener('click', function () {
+                toast.hide();
+            });
+        {% endif %}
+    {% endwith %}
+</script>
 </body>
 </html>
