@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def getConn():
     return psycopg2.connect(
         host=os.getenv("DB_HOST"),
@@ -41,7 +42,7 @@ def getGroupMemberNames(groupCode, name):
     with getConn() as conn:
         with conn.cursor() as cursor:
             sql = "select name from users.users where group_code = %s and name != %s"
-            data = (groupCode,name,)
+            data = (groupCode, name,)
 
             cursor.execute(sql, data)
             names = cursor.fetchall()
@@ -58,6 +59,7 @@ def getTopDays(groupCode):
             dates = cursor.fetchall()
             return dates
 
+
 def addDates(dates, userid):
     with getConn() as conn:
         with conn.cursor() as cursor:
@@ -71,6 +73,7 @@ def addDates(dates, userid):
 
             conn.commit()
 
+
 def getDatesForUser(userId):
     with getConn() as conn:
         with conn.cursor() as cursor:
@@ -81,6 +84,7 @@ def getDatesForUser(userId):
             cursor.execute(sql, data)
             dates = [str(r[0]) for r in cursor.fetchall()]
             return dates
+
 
 def getGroupUserCount(groupCode):
     with getConn() as conn:
@@ -102,5 +106,14 @@ def removeDates(dates, userid):
                 data = (userid, dateInQuestion)
 
                 cursor.execute(sql, data)
+            conn.commit()
 
+
+def changeScreenName(userId, newName):
+    with getConn() as conn:
+        with conn.cursor() as cursor:
+            sql = "UPDATE users.users SET name = %s WHERE id = %s;"
+            data = (newName.upper(), userId)
+
+            cursor.execute(sql, data)
             conn.commit()

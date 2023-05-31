@@ -1,4 +1,3 @@
-import datetime
 import secrets
 from ast import literal_eval
 
@@ -49,9 +48,23 @@ def home():
             request.method = "GET"
             return redirect(url_for("home"))
 
-        return render_template("home.html", groupMembers=db.getGroupMemberNames(session["groupCode"], session["name"]), topDays=db.getTopDays(session["groupCode"]), userCount=db.getGroupUserCount(session["groupCode"]), selected_dates=db.getDatesForUser(session["id"]))
+        return render_template("home.html", groupMembers=db.getGroupMemberNames(session["groupCode"], session["name"]),
+                               topDays=db.getTopDays(session["groupCode"]),
+                               userCount=db.getGroupUserCount(session["groupCode"]),
+                               selected_dates=db.getDatesForUser(session["id"]))
     else:
         return redirect(url_for("index"))
+
+
+@app.route("/changeScreenName", methods=("GET", "POST"))
+def changeScreenName():
+    if request.method == "POST":
+        newName = request.form["name"]
+        db.changeScreenName(session["id"], newName)
+        session["name"] = newName
+        return redirect(url_for("home"))
+
+    return render_template("changeScreenName.html")
 
 
 @app.route("/logout")

@@ -14,11 +14,11 @@
             <div class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                    aria-expanded="false">
-                    {{session["name"].title()}}
+                    {{ session["name"].title() }}
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Edit Display Name</a></li>
-                    <li><a class="dropdown-item" href="{{url_for('logout')}}">Logout</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('changeScreenName') }}">Change Screen Name</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
                 </ul>
             </div>
         </div>
