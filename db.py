@@ -115,7 +115,7 @@ def removeDates(dates, userid):
     with getConn() as conn:
         with conn.cursor() as cursor:
             for d in dates:
-                dateInQuestion = datetime.fromisoformat(d).date()
+                dateInQuestion = dp.isoparse(d).date()
                 sql = "DELETE FROM entries.entries WHERE user_id = %s AND date = %s;"
                 data = (userid, dateInQuestion)
 
