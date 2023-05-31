@@ -40,11 +40,12 @@ def index():
 def home():
     if "id" in session.keys():
         if request.method == "POST":
-            db.addDates(literal_eval(request.form["selectedDates"]), session["id"])
+            dates = literal_eval(request.form["selectedDates"])
+            db.addDates(dates, session["id"])
             request.method = "GET"
             return redirect(url_for("home"))
 
-        return render_template("home.html", groupMembers=db.getGroupMemberNames(session["groupCode"], session["name"]), topDays=db.getTopDays(session["groupCode"]))
+        return render_template("home.html", groupMembers=db.getGroupMemberNames(session["groupCode"], session["name"]), topDays=db.getTopDays(session["groupCode"]), userCount=db.getGroupUserCount(session["groupCode"]), selected_dates=db.getDatesForUser(session["id"]))
     else:
         return redirect(url_for("index"))
 
